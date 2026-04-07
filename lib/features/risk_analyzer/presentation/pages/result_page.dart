@@ -31,7 +31,7 @@ class RiskResultScreen extends StatelessWidget {
         child: Column(
           children: [
 
-            /// 🧾 Risk Card
+            ///  Risk Card
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -81,7 +81,7 @@ class RiskResultScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// 💡 Suggestions
+            ///  Suggestions
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -110,20 +110,6 @@ class RiskResultScreen extends StatelessWidget {
               ),
             ),
 
-            /// 🔙 Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child: const Text("Back"),
-              ),
-            ),
           ],
         ),
       ),

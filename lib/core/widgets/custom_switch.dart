@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:healthguard/core/theme/appcolors.dart';
 
-class CustomSwitchTile extends StatelessWidget {
+class CustomSwitch extends StatelessWidget {
   final String title;
   final bool value;
   final Function(bool) onChanged;
 
-  const CustomSwitchTile({
+  const CustomSwitch({
     super.key,
     required this.title,
     required this.value,
