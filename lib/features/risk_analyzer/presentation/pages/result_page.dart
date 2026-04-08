@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:healthguard/core/theme/appcolors.dart';
+import 'package:healthguard/core/widgets/custom_appbar.dart';
+import 'package:healthguard/core/widgets/risk_card.dart';
+import 'package:healthguard/core/widgets/suggestion_tile.dart';
 
+// Result screen that displays the analyzed risk level, status and suggested actions
+// Output: Risk Level, Security Status, Suggested Actions
 class RiskResultScreen extends StatelessWidget {
-  final int score;
   final String riskLevel;
   final String status;
   final List<String> suggestions;
 
   const RiskResultScreen({
     super.key,
-    required this.score,
     required this.riskLevel,
     required this.status,
     required this.suggestions,
@@ -18,115 +21,91 @@ class RiskResultScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Color riskColor = _getRiskColor(riskLevel);
+    
+    final screenWidth = MediaQuery.of(context).size.width;
+    final horizontalPadding = screenWidth * 0.04;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Risk Result"),
-        backgroundColor: AppColors.primaryGreen,
-      ),
+      appBar: CustomAppBar.build(title: "Risk Result"),
       backgroundColor: AppColors.cream,
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
+      body: SafeArea(
+        child: SingleChildScrollView(
+          // ClampingScrollPhysics for consistent scroll on Android and iOS
+          physics: const ClampingScrollPhysics(),
+          padding: EdgeInsets.symmetric(
+            horizontal: horizontalPadding,
+            vertical: 16,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            ///  Risk Card
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Text(
-                      "Risk Level",
+              // Risk Card: shows risk level icon, label and security status
+              RiskCard(riskLevel: riskLevel, status: status),
+
+              const SizedBox(height: 24),
+
+              // Suggested Actions: shown only when there are suggestions
+              // If no suggestions, device is considered fully safe
+              if (suggestions.isNotEmpty) ...[
+                Text(
+                  "Suggested Actions",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryGreen,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                
+                ...suggestions.map((s) => SuggestionTile(text: s)),
+              ] else
+                // Empty state: no suggestions means device is safe
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 24),
+                    child: Text(
+                      "No actions needed. Your device is safe ✅",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.grey[600],
+                        color: AppColors.primaryGreen,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
+                  ),
+                ),
 
-                    const SizedBox(height: 10),
+              const SizedBox(height: 24),
 
-                    Text(
-                      riskLevel,
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: riskColor,
-                      ),
+              // Analyze Again button: pops back to input screen
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryGreen,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-
-                    const SizedBox(height: 10),
-
-                    Text(
-                      "Score: $score",
-                      style: const TextStyle(fontSize: 16),
+                  ),
+                  child: const Text(
+                    "Analyze Again",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w600,
                     ),
-
-                    const SizedBox(height: 10),
-
-                    Text(
-                      status,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(height: 20),
-
-            ///  Suggestions
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Suggested Actions",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryGreen,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            Expanded(
-              child: ListView.builder(
-                itemCount: suggestions.length,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.check_circle_outline),
-                      title: Text(suggestions[index]),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-          ],
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  /// Risk Color
-  Color _getRiskColor(String level) {
-    switch (level) {
-      case "Safe":
-        return Colors.green;
-      case "Moderate":
-        return Colors.orange;
-      case "High Risk":
-        return Colors.red;
-      default:
-        return Colors.black;
-    }
   }
 }

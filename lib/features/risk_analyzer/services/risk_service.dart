@@ -1,4 +1,4 @@
-import 'package:healthguard/features/risk_analyzer/models.dart/risk_input.dart';
+import 'package:healthguard/features/risk_analyzer/models/risk_input.dart';
 
 class RiskService {
  RiskResult calculateScore({
@@ -13,6 +13,8 @@ class RiskService {
 }) {
 
   int score = 0;
+
+
 
   /// Base Score
   if (!hasScreenLock) score += 4;
@@ -38,6 +40,9 @@ class RiskService {
   if (!osUpdated) score += 4;
   if (!antivirus) score += 3;
 
+
+
+
   /// Critical Override
   bool isHighRisk = false;
 
@@ -48,6 +53,8 @@ class RiskService {
   if (!osUpdated && !antivirus) {
     isHighRisk = true;
   }
+
+
 
   /// Adjustments
   if (appCount < 10) score -= 2;
@@ -61,6 +68,9 @@ class RiskService {
       !storage;
 
   if (allSafe) score -= 3;
+
+
+  if (score < 0) score = 0;
 
   /// Risk Level
   String riskLevel;
@@ -79,6 +89,9 @@ class RiskService {
     riskLevel = "High Risk";
     status = "High security risk detected";
   }
+
+
+  
 
   /// Suggestions
   List<String> suggestions = [];
