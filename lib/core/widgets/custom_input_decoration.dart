@@ -7,7 +7,7 @@ class AppInputDecoration {
     return InputDecoration(
       hintText: hintText,
       filled: true,
-      fillColor: Colors.white,
+      fillColor: AppColors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
